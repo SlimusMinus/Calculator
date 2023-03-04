@@ -7,6 +7,21 @@ using static System.Console;
 
 namespace Calculation
 {
+    public class MyException : ApplicationException
+    {
+        private string msg;
+        public DateTime TimeExp { get; private set; }
+        public MyException()
+        {
+            msg = "Can't divided by zero";
+            TimeExp = DateTime.Now;
+        }
+        public override string Message
+        {
+            get { return msg; }
+        }
+    }
+
     internal class Program
     {
         static void Main(string[] args)
@@ -14,7 +29,7 @@ namespace Calculation
             BackgroundColor = ConsoleColor.White;
             ForegroundColor = ConsoleColor.DarkBlue;
             string act;
-            float num1, num2, res;
+            float num1 = 0, num2 = 0, res = 0;
 
             WriteLine("Ruls calculation");
             WriteLine("Input number 1 and press Enter");
@@ -24,16 +39,15 @@ namespace Calculation
             while (true)
             {
                 Clear();
+            l1:
                 try
                 {
                     num1 = float.Parse(ReadLine());
                 }
-                catch (Exception)
+                catch (FormatException ex)
                 {
-                    WriteLine("Error, input just number!!!");
-                    WriteLine("Press Enter, and input new numbers");
-                    ReadLine();
-                    continue;
+                    WriteLine($"{ex.Message}");
+                    goto l1;
                 }
 
                 act = ReadLine();
@@ -45,12 +59,9 @@ namespace Calculation
                             {
                                 num2 = float.Parse(ReadLine());
                             }
-                            catch (Exception)
+                            catch (FormatException ex)
                             {
-                                WriteLine("Error, input just number!!!");
-                                WriteLine("Press Enter");
-                                ReadLine();
-                                continue;
+                                WriteLine($"{ex.Message} ");
                             }
                             WriteLine(num1 + num2);
                         }
@@ -61,12 +72,9 @@ namespace Calculation
                             {
                                 num2 = float.Parse(ReadLine());
                             }
-                            catch (Exception)
+                            catch (FormatException ex)
                             {
-                                WriteLine("Error, input just number!!!");
-                                WriteLine("Press Enter");
-                                ReadLine();
-                                continue;
+                                WriteLine($"{ex.Message} ");
                             }
                             WriteLine(num1 - num2);
                         }
@@ -77,12 +85,9 @@ namespace Calculation
                             {
                                 num2 = float.Parse(ReadLine());
                             }
-                            catch (Exception)
+                            catch (FormatException ex)
                             {
-                                WriteLine("Error, input just number!!!");
-                                WriteLine("Press Enter");
-                                ReadLine();
-                                continue;
+                                WriteLine($"{ex.Message} ");
                             }
                             WriteLine(num1 * num2);
                         }
@@ -92,22 +97,19 @@ namespace Calculation
                             try
                             {
                                 num2 = float.Parse(ReadLine());
+                                if ( num2 == 0 ) { throw new MyException(); }
+                                res = num1 / num2;
+                                WriteLine(res);
                             }
-                            catch (Exception)
+                            catch (FormatException ex)
                             {
-                                WriteLine("Error, input just number!!!");
-                                WriteLine("Press Enter");
-                                ReadLine();
-                                continue;
+                                WriteLine($"{ex.Message}");
                             }
-                            if (num2 == 0)
+                            catch (MyException myexp)
                             {
-                                WriteLine("Сan't divide by 0, press Enter");
-                                ReadLine();
-                                continue;
+                                WriteLine($"{myexp.Message}");
                             }
-                            else
-                                WriteLine(num1 / num2);
+                            
                         }
                         break;
                     default:
